@@ -1,0 +1,27 @@
+
+You may work either individually or in pairs.  In this assignment, you will implement the Miller-Rabin test of primality in either Java or Python.  See the relevant file for your chosen language attached to this assignment.  You can find pseudocode for the algorithm toward the end of notes for RSA.  You actually have two Java methods or two Python functions to implement: millerRabin and isProbablyPrime.
+
+To get full credit, your implementation must have all of the following properties:
+
+Algorithm line 1: Must be implemented without using division or computing any mods.  Here's how to do it.  Given the value of n-1, determine the position of the right-most 1 bit.  That position is k.  Once you have k, you can get q by shifting n-1 to the right k places.
+
+How do you determine the position of the right-most 1 bit?  Let's assume you have n-1 in a variable x.  Initialize k to 0.  Check if the right most bit of x is a 1 using an AND (i.e., &).  You can do this by checking if x & 1 is equal to 1.  If it is a 1, then stop you have your k.  Otherwise, replace x with x right-shifted 1 bit and increase k by 1.  Check if x & 1 is equal to 1.  If it is a 1, then stop you have your k.  Otherwise, repeat the right shift of x and the increase of k, etc.  Once this iteration halts, you also have your q.  (x is actually your q at the end of this).  Be careful though, if n is 1, then n-1=0, and there are no 1 bits, so this will lead to an infinite loop.  Handle this, by simply checking at the start of the algorithm if n is 1, and return false in that case since 1 is not prime.  In both python and java, >> is right shift.  Sign extension doesn't matter (just assume that n is positive.
+
+Algorithm line 2: Java's Random class has a nextInt method that you can pass an upper bound to.  Assuming that r is a Random object, then r.nextInt(5) generates a random integer from the set {0, 1, 2, 3, 4}.  Pay careful attention to the range in the pseudocode for the random value of a.  It must be greater than 1 and less than n-1.  In Python, import the random module, and you can use either randint or randrange.  Whichever language you use, make sure your a is random.  This is important.
+
+Algorithm line 3: For full credit, this modular exponentiation must be done in logarithmic time.  In Python, you can compute the modular exponentiation using the pow function: pow(a, b, n) computes a to the power b mod n.  In Python, definitely do not do: a ** b % n.  That will do the exponentiation first and then the mod, which definitely won't be logarithmic time (due to the size numbers).  In Java, the BigInteger class has a modPow method that computes this as well, which you are allowed to use (for full credit).  This is less than ideal since I have the method you're implementing working with int values.  You will need to convert to BigInteger objects to use it which will add some cost, and then convert the result back to an int.  [For a small amount of extra credit, e.g., 10 points, you can implement your own modPow(int a, int b, int n).]
+
+Algorithm line 5: For full credit, do not do modular exponentiations for this step.  You don't need to.  First, when k is equal to 0, the modular exponentiation you need was already computed in line 3.  Second, each successive iteration of the loop is just the previous value squared and then modulo reduced mod n.
+
+For isProbablyPrime, see the slide in the notes right after Miller Rabin.  It indicates the probability the result is Prime for t calls to Miller Rabin.  For a given target probability, you can determine the number of times to call Miller Rabin.  I'll explain in class.
+
+
+Algorithm:
+
+# TEST (n) is:
+  # 1. Find integers k, q, k > 0, q odd, so that (n–1) = 2 kq
+  # 2. Select a random integer a, 1 < a < n–1
+  # 3. if a^q mod n = 1 then return (“maybe prime");
+  # 4. for j = 0 to k – 1 do
+  # 5. if (((a^2^j)^q) mod n = n-1)) then return(" maybe prime
+  # 6. return ("composite")
